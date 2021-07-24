@@ -2,9 +2,12 @@
 # used to work with json data
 # import json
 
-# importing spelling_grammar module from dandelion_analytics module in
+# importing semantic_similarity module from dandelion_analytics module in
 # semantic_similarity package
-from .semantic_similarity.dandelion_analytics import semantic_similarity
+# from .semantic_similarity.dandelion_analytics import semantic_similarity
+# importing semantic_similarity module from siamese_network module in
+# semantic_similarity package
+from .semantic_similarity.siamese_network import semantic_similarity
 # importing spelling_grammar_grammarbot module from spelling_grammar package
 from .spelling_grammar import spelling_grammar_grammarbot
 # importing spelling_grammar_grammarbot module from spelling_grammar package
@@ -19,7 +22,7 @@ def evaluate(answers):
     sentiment_score = textblob_sentiment.evaluate(answers.student_answer)
     overall_score = calculate_overall_score(spelling_score,
                                             grammar_score,
-                                            similarity_score['similarity'])
+                                            similarity_score['similarity'] * 10.0)
     return {
         'answers': {
             'model_answer': answers.model_answer,

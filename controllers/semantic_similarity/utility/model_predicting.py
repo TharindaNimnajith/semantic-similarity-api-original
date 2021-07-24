@@ -11,9 +11,9 @@ from keras.models import model_from_json
 from sklearn.metrics import roc_auc_score
 
 # importing preprocess_text function from text_preprocessing module
-from text_preprocessing import preprocess_text
+from .text_preprocessing import preprocess_text
 # importing transform_text function from text_transforming module
-from text_transforming import transform_text
+from .text_transforming import transform_text
 
 
 # predicting the relatedness of the two texts
@@ -40,7 +40,7 @@ def auroc(y_true, y_pred):
 
 
 # reading and loading json file
-json_file = open('models/siamese_network_model.json', 'r')
+json_file = open('controllers/semantic_similarity/utility/models/siamese_network_model.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 
@@ -48,7 +48,7 @@ json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 
 # loading weights into loaded model
-loaded_model.load_weights('models/siamese_network_model.h5')
+loaded_model.load_weights('controllers/semantic_similarity/utility/models/siamese_network_model.h5')
 
 # compiling model
 # configuring the model for training
