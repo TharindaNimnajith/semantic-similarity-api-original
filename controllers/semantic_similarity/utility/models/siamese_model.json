@@ -1,0 +1,506 @@
+{
+  "class_name": "Functional",
+  "config": {
+    "name": "model",
+    "layers": [
+      {
+        "class_name": "InputLayer",
+        "config": {
+          "batch_input_shape": [
+            null,
+            30
+          ],
+          "dtype": "float32",
+          "sparse": false,
+          "ragged": false,
+          "name": "input_1"
+        },
+        "name": "input_1",
+        "inbound_nodes": []
+      },
+      {
+        "class_name": "InputLayer",
+        "config": {
+          "batch_input_shape": [
+            null,
+            30
+          ],
+          "dtype": "float32",
+          "sparse": false,
+          "ragged": false,
+          "name": "input_2"
+        },
+        "name": "input_2",
+        "inbound_nodes": []
+      },
+      {
+        "class_name": "Embedding",
+        "config": {
+          "name": "synopsis_embedd",
+          "trainable": false,
+          "batch_input_shape": [
+            null,
+            30
+          ],
+          "dtype": "float32",
+          "input_dim": 371654,
+          "output_dim": 300,
+          "embeddings_initializer": {
+            "class_name": "RandomUniform",
+            "config": {
+              "minval": -0.05,
+              "maxval": 0.05,
+              "seed": null
+            }
+          },
+          "embeddings_regularizer": null,
+          "activity_regularizer": null,
+          "embeddings_constraint": null,
+          "mask_zero": false,
+          "input_length": 30
+        },
+        "name": "synopsis_embedd",
+        "inbound_nodes": [
+          [
+            [
+              "input_1",
+              0,
+              0,
+              {}
+            ]
+          ],
+          [
+            [
+              "input_2",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "LSTM",
+        "config": {
+          "name": "lstm",
+          "trainable": true,
+          "dtype": "float32",
+          "return_sequences": true,
+          "return_state": false,
+          "go_backwards": false,
+          "stateful": false,
+          "unroll": false,
+          "time_major": false,
+          "units": 64,
+          "activation": "relu",
+          "recurrent_activation": "sigmoid",
+          "use_bias": true,
+          "kernel_initializer": {
+            "class_name": "GlorotUniform",
+            "config": {
+              "seed": null
+            },
+            "shared_object_id": 4
+          },
+          "recurrent_initializer": {
+            "class_name": "Orthogonal",
+            "config": {
+              "gain": 1.0,
+              "seed": null
+            },
+            "shared_object_id": 5
+          },
+          "bias_initializer": {
+            "class_name": "Zeros",
+            "config": {},
+            "shared_object_id": 6
+          },
+          "unit_forget_bias": true,
+          "kernel_regularizer": null,
+          "recurrent_regularizer": null,
+          "bias_regularizer": null,
+          "activity_regularizer": null,
+          "kernel_constraint": null,
+          "recurrent_constraint": null,
+          "bias_constraint": null,
+          "dropout": 0.0,
+          "recurrent_dropout": 0.0,
+          "implementation": 2
+        },
+        "name": "lstm",
+        "inbound_nodes": [
+          [
+            [
+              "synopsis_embedd",
+              0,
+              0,
+              {}
+            ]
+          ],
+          [
+            [
+              "synopsis_embedd",
+              1,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Flatten",
+        "config": {
+          "name": "flatten",
+          "trainable": true,
+          "dtype": "float32",
+          "data_format": "channels_last"
+        },
+        "name": "flatten",
+        "inbound_nodes": [
+          [
+            [
+              "lstm",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Flatten",
+        "config": {
+          "name": "flatten_1",
+          "trainable": true,
+          "dtype": "float32",
+          "data_format": "channels_last"
+        },
+        "name": "flatten_1",
+        "inbound_nodes": [
+          [
+            [
+              "lstm",
+              1,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Multiply",
+        "config": {
+          "name": "multiply_1",
+          "trainable": true,
+          "dtype": "float32"
+        },
+        "name": "multiply_1",
+        "inbound_nodes": [
+          [
+            [
+              "flatten",
+              0,
+              0,
+              {}
+            ],
+            [
+              "flatten",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Multiply",
+        "config": {
+          "name": "multiply_2",
+          "trainable": true,
+          "dtype": "float32"
+        },
+        "name": "multiply_2",
+        "inbound_nodes": [
+          [
+            [
+              "flatten_1",
+              0,
+              0,
+              {}
+            ],
+            [
+              "flatten_1",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Subtract",
+        "config": {
+          "name": "subtract",
+          "trainable": true,
+          "dtype": "float32"
+        },
+        "name": "subtract",
+        "inbound_nodes": [
+          [
+            [
+              "flatten",
+              0,
+              0,
+              {}
+            ],
+            [
+              "flatten_1",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Lambda",
+        "config": {
+          "name": "lambda",
+          "trainable": true,
+          "dtype": "float32",
+          "function": [
+            "4wEAAAAAAAAAAwAAAAUAAABDAAAAczoAAAB8AFwCfQF9AnQAagF8AWQBZAKNAn0BdABqAXwCZAFk\nAo0CfQJ0AGoCfAF8AhQAZAFkA2QEjQMLAFMAKQVO6f////8pAdoEYXhpc1QpAnICAAAA2ghrZWVw\nZGltcykD2gFL2gxsMl9ub3JtYWxpemXaBG1lYW4pA9oFdmVzdHPaAXjaAXmpAHIKAAAA+h88aXB5\ndGhvbi1pbnB1dC02Ny0wMGEwMTM0NzkxNjY+2g9jb3NpbmVfZGlzdGFuY2UEAAAAcwgAAAAAAQgB\nDgEOAQ==\n",
+            null,
+            null
+          ],
+          "function_type": "lambda",
+          "module": "__main__",
+          "output_shape": [
+            "4wEAAAAAAAAAAwAAAAIAAABDAAAAcxQAAAB8AFwCfQF9AnwBZAEZAGQCZgJTACkDTukAAAAA6QEA\nAACpACkD2gZzaGFwZXPaBnNoYXBlMdoGc2hhcGUycgMAAAByAwAAAPofPGlweXRob24taW5wdXQt\nNjctMDBhMDEzNDc5MTY2PtoVY29zX2Rpc3Rfb3V0cHV0X3NoYXBlCwAAAHMEAAAAAAEIAQ==\n",
+            null,
+            null
+          ],
+          "output_shape_type": "lambda",
+          "output_shape_module": "__main__",
+          "arguments": {}
+        },
+        "name": "lambda",
+        "inbound_nodes": [
+          [
+            [
+              "flatten",
+              0,
+              0,
+              {}
+            ],
+            [
+              "flatten_1",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Subtract",
+        "config": {
+          "name": "subtract_1",
+          "trainable": true,
+          "dtype": "float32"
+        },
+        "name": "subtract_1",
+        "inbound_nodes": [
+          [
+            [
+              "multiply_1",
+              0,
+              0,
+              {}
+            ],
+            [
+              "multiply_2",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Multiply",
+        "config": {
+          "name": "multiply",
+          "trainable": true,
+          "dtype": "float32"
+        },
+        "name": "multiply",
+        "inbound_nodes": [
+          [
+            [
+              "subtract",
+              0,
+              0,
+              {}
+            ],
+            [
+              "subtract",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Concatenate",
+        "config": {
+          "name": "concatenate",
+          "trainable": true,
+          "dtype": "float32",
+          "axis": -1
+        },
+        "name": "concatenate",
+        "inbound_nodes": [
+          [
+            [
+              "lambda",
+              0,
+              0,
+              {}
+            ],
+            [
+              "subtract_1",
+              0,
+              0,
+              {}
+            ],
+            [
+              "multiply",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Dense",
+        "config": {
+          "name": "conc_layer",
+          "trainable": true,
+          "dtype": "float32",
+          "units": 100,
+          "activation": "relu",
+          "use_bias": true,
+          "kernel_initializer": {
+            "class_name": "GlorotUniform",
+            "config": {
+              "seed": null
+            }
+          },
+          "bias_initializer": {
+            "class_name": "Zeros",
+            "config": {}
+          },
+          "kernel_regularizer": null,
+          "bias_regularizer": null,
+          "activity_regularizer": null,
+          "kernel_constraint": null,
+          "bias_constraint": null
+        },
+        "name": "conc_layer",
+        "inbound_nodes": [
+          [
+            [
+              "concatenate",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Dropout",
+        "config": {
+          "name": "dropout",
+          "trainable": true,
+          "dtype": "float32",
+          "rate": 0.01,
+          "noise_shape": null,
+          "seed": null
+        },
+        "name": "dropout",
+        "inbound_nodes": [
+          [
+            [
+              "conc_layer",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      },
+      {
+        "class_name": "Dense",
+        "config": {
+          "name": "out",
+          "trainable": true,
+          "dtype": "float32",
+          "units": 1,
+          "activation": "sigmoid",
+          "use_bias": true,
+          "kernel_initializer": {
+            "class_name": "GlorotUniform",
+            "config": {
+              "seed": null
+            }
+          },
+          "bias_initializer": {
+            "class_name": "Zeros",
+            "config": {}
+          },
+          "kernel_regularizer": null,
+          "bias_regularizer": null,
+          "activity_regularizer": null,
+          "kernel_constraint": null,
+          "bias_constraint": null
+        },
+        "name": "out",
+        "inbound_nodes": [
+          [
+            [
+              "dropout",
+              0,
+              0,
+              {}
+            ]
+          ]
+        ]
+      }
+    ],
+    "input_layers": [
+      [
+        "input_1",
+        0,
+        0
+      ],
+      [
+        "input_2",
+        0,
+        0
+      ]
+    ],
+    "output_layers": [
+      [
+        "out",
+        0,
+        0
+      ]
+    ]
+  },
+  "keras_version": "2.5.0",
+  "backend": "tensorflow"
+}
